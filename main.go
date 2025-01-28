@@ -6,7 +6,7 @@ import (
 )
 
 type BackedEnum[
-	ValueType interface{ ~string | ~int },
+	ValueType interface{ string | int },
 	Map ~map[string]ValueType,
 ] struct {
 	structure Map
