@@ -1,0 +1,44 @@
+# Backed Enum
+
+This packages is called `backedEnum` this file is a one package file.
+This package is one that ships with struct that is used to create enums.
+It's a type struct that allows it's user to parse, validate and get enum values.
+
+To install use this command.
+
+```sh
+go get githhub.com/louiss0/backed_enum
+```
+
+## Creating Enums
+
+When it comes to creating enums this it's best to use map with a type alias.
+Each method on the type aliased Map should be capitalised.
+
+1. Create a type aliased map
+
+```go
+    type AliasedMap  map[string]int
+```
+
+2. Add methods to the type aliased map.
+
+```go
+    func (am AlialsedMap) GET() string { return am["GET"] }
+    func (am AlialsedMap) POST() string { return am["POST"] }
+    func (am AlialsedMap) PATCH() string { return am["PATCH"] }
+    func (am AlialsedMap) DELETE() string { return am["DELETE"] }
+```
+
+3. Use the type aliased map in the enum.
+
+```go
+var AliasedMapEnum = backedEnum.BackedEum[string, AliasedMap]{
+	structure: AlaiasedMap{
+		"GET": "get",
+		"POST": "post",
+		"PATCH": "patch",
+		"DELETE": "delete",
+	}
+}
+```
