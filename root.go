@@ -1,4 +1,4 @@
-package backedenum
+package backedEnum
 
 import (
 	"fmt"
