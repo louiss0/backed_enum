@@ -1,4 +1,4 @@
-module githhub.com/louiss0/backed_enum
+module github.com/louiss0/backed_enum
 
 go 1.23.2
 
