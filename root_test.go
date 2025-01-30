@@ -12,7 +12,7 @@ func TestBackedEnum(testUtils *testing.T) {
 
 	testUtils.Run("works", func(t *testing.T) {
 
-		enum := BackedEnum[int, map[string]int]{
+		enum := BackedEnum[int, map[string]int, int]{
 			structure: map[string]int{
 				"FOO": 1,
 				"BAR": 2,
@@ -30,7 +30,7 @@ func TestBackedEnum(testUtils *testing.T) {
 
 	})
 
-	enum := BackedEnum[int, map[string]int]{
+	enum := BackedEnum[int, map[string]int, int]{
 		structure: map[string]int{
 			"FOO": 1,
 			"BAR": 2,

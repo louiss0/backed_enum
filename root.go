@@ -6,23 +6,24 @@ import (
 )
 
 type BackedEnum[
-	ValueType interface{ string | int },
-	Map ~map[string]ValueType,
+	MapValue interface{ ~string | ~int },
+	Map ~map[string]MapValue,
+	StringOrNumber interface{ string | int },
 ] struct {
 	structure Map
 }
 
-func (e BackedEnum[ValueType, Map]) Structure() Map {
+func (e BackedEnum[MapValue, Map, StringOrNumber]) Structure() Map {
 
 	return maps.Clone(e.structure)
 
 }
 
-func (e BackedEnum[ValueType, Map]) Validate(input ValueType) bool {
+func (e BackedEnum[MapValue, Map, StringOrNumber]) Validate(input StringOrNumber) bool {
 
 	for _, value := range e.Values() {
 
-		if value == input {
+		if value == any(input) {
 
 			return true
 		}
@@ -33,11 +34,11 @@ func (e BackedEnum[ValueType, Map]) Validate(input ValueType) bool {
 
 }
 
-func (e BackedEnum[ValueType, Map]) Parse(input ValueType) error {
+func (e BackedEnum[MapValue, Map, StringOrNumber]) Parse(input StringOrNumber) error {
 
 	for _, value := range e.Values() {
 
-		if value == input {
+		if value == any(input) {
 
 			return nil
 		}
@@ -48,9 +49,9 @@ func (e BackedEnum[ValueType, Map]) Parse(input ValueType) error {
 
 }
 
-func (e BackedEnum[ValueType, Map]) Values() []ValueType {
+func (e BackedEnum[MapValue, Map, StringOrNumber]) Values() []MapValue {
 
-	slice := []ValueType{}
+	slice := []MapValue{}
 
 	structValues := maps.Values(e.structure)
 
@@ -90,7 +91,7 @@ func (self loadStatus) SUCCESS() string {
 
 }
 
-var LoadStatus = BackedEnum[string, loadStatus]{
+var LoadStatus = BackedEnum[string, loadStatus, string]{
 	structure: loadStatus{
 		"ERROR":   "error",
 		"SUCCESS": "success",
