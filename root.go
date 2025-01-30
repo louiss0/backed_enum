@@ -8,7 +8,21 @@ import (
 	"maps"
 )
 
-// BackedEnum represents a type-safe enumeration with backing values.
+// backedEnum represents a type-safe enumeration with backing values.
+//
+// Type Parameters:
+//   - MapValue: The type of the backing value (~string or ~int)
+//   - Map: The map type storing enum key-value pairs
+//   - StringOrNumber: The allowed input types (string or int)
+type backedEnum[
+	MapValue interface{ ~string | ~int },
+	Map ~map[string]MapValue,
+	StringOrNumber interface{ string | int },
+] struct {
+	structure Map
+}
+
+// NewBackedEnum - creates a backed enum
 //
 // Type Parameters:
 //   - MapValue: The type of the backing value (~string or ~int)
@@ -16,34 +30,42 @@ import (
 //   - StringOrNumber: The allowed input types (string or int)
 //
 // Example:
-//   type Status map[string]string
-//   var StatusEnum = BackedEnum[string, Status, string]{
-//       structure: Status{
-//           "OK": "ok",
-//           "ERROR": "error",
-//       },
-//   }
-type BackedEnum[
-    MapValue interface{ ~string | ~int },
-    Map ~map[string]MapValue,
-    StringOrNumber interface{ string | int },
-] struct {
-	structure Map
+//
+// ```go
+//
+//	type status map[string]string
+//	var StatusEnum = NewBackedEnum[string, status, string](
+//	    structure: Status{
+//	        "OK": "ok",
+//	        "ERROR": "error",
+//	    },
+//	}
+//
+// )
+// ```
+func NewBackedEnum[
+	MapValue interface{ ~string | ~int },
+	Map ~map[string]MapValue,
+	StringOrNumber interface{ string | int },
+](structure Map) backedEnum[MapValue, Map, StringOrNumber] {
+
+	return backedEnum[MapValue, Map, StringOrNumber]{structure}
+
 }
 
 // Structure returns a deep copy of the underlying enum structure.
 // This prevents direct modification of the enum's internal state.
-func (e BackedEnum[MapValue, Map, StringOrNumber]) Structure() Map {
+func (e backedEnum[MapValue, Map, StringOrNumber]) Structure() Map {
 
-    return maps.Clone(e.structure)
+	return maps.Clone(e.structure)
 
 }
 
 // Validate checks if the provided input is a valid enum value.
 // It returns true if the input matches any of the enum's backing values.
-func (e BackedEnum[MapValue, Map, StringOrNumber]) Validate(input StringOrNumber) bool {
+func (e backedEnum[MapValue, Map, StringOrNumber]) Validate(input StringOrNumber) bool {
 
-    for _, value := range e.Values() {
+	for _, value := range e.Values() {
 
 		if value == any(input) {
 
@@ -58,9 +80,9 @@ func (e BackedEnum[MapValue, Map, StringOrNumber]) Validate(input StringOrNumber
 
 // Parse validates the input value against the enum's valid values.
 // It returns nil if the input is valid, or an error describing the invalid input.
-func (e BackedEnum[MapValue, Map, StringOrNumber]) Parse(input StringOrNumber) error {
+func (e backedEnum[MapValue, Map, StringOrNumber]) Parse(input StringOrNumber) error {
 
-    for _, value := range e.Values() {
+	for _, value := range e.Values() {
 
 		if value == any(input) {
 
@@ -74,9 +96,9 @@ func (e BackedEnum[MapValue, Map, StringOrNumber]) Parse(input StringOrNumber) e
 }
 
 // Values returns a slice containing all backing values of the enum.
-func (e BackedEnum[MapValue, Map, StringOrNumber]) Values() []MapValue {
+func (e backedEnum[MapValue, Map, StringOrNumber]) Values() []MapValue {
 
-    slice := []MapValue{}
+	slice := []MapValue{}
 
 	structValues := maps.Values(e.structure)
 
@@ -124,8 +146,8 @@ func (self loadStatus) SUCCESS() string {
 
 // LoadStatus is a predefined enum representing various states of a loading operation.
 // It defines four states: IDLE, LOADING, ERROR, and SUCCESS.
-var LoadStatus = BackedEnum[string, loadStatus, string]{
-    structure: loadStatus{
+var LoadStatus = backedEnum[string, loadStatus, string]{
+	structure: loadStatus{
 		"ERROR":   "error",
 		"SUCCESS": "success",
 		"LOADING": "loading",
